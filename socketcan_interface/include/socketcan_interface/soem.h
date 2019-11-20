@@ -12,7 +12,20 @@
 
 namespace can {
 
-class SoemInterface : public AsioDriver<boost::asio::windows::stream_handle> {
+class StrandLifecycle
+{
+public:
+    static bool ready(boost::asio::io_service::strand &socket)
+    {
+        return true;
+    }
+
+    static void shutdown(boost::asio::io_service::strand &socket)
+    {
+    }
+};
+
+class SoemInterface : public AsioDriver<boost::asio::io_service::strand, StrandLifecycle> {
 private:
     bool loopback_;
     State state_;
@@ -25,7 +38,7 @@ protected:
 
     virtual bool enqueue(const Frame &msg);
 
-    void readFrame(const boost::system::error_code& error);
+    void readFrame();
 
 public:
     SoemInterface();

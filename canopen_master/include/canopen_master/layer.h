@@ -198,33 +198,33 @@ private:
 template<typename T=Layer> class LayerGroup : public Layer, public VectorHelper<T> {
 protected:
     template<typename Data, typename FuncType, typename FailType> void call_or_fail(FuncType func, FailType fail, Data &status){
-        this->template call(func, status);
+        this->call(func, status);
         if(!status.template bounded<LayerStatus::Warn>()){
-            this->template call(fail, status);
+            this->call(fail, status);
             (this->*fail)(status);
         }
     }
     template<typename Data, typename FuncType, typename FailType> void call_or_fail_rev(FuncType func, FailType fail, Data &status){
-        this->template call_rev(func, status);
+        this->call_rev(func, status);
         if(!status.template bounded<LayerStatus::Warn>()){
-            this->template call_rev(fail, status);
+            this->call_rev(fail, status);
             (this->*fail)(status);
         }
     }
 
     virtual void handleRead(LayerStatus &status, const LayerState &current_state) {
-        this->template call_or_fail(&Layer::read, &Layer::halt, status);
+        this->call_or_fail(&Layer::read, &Layer::halt, status);
     }
     virtual void handleWrite(LayerStatus &status, const LayerState &current_state) {
-        this->template call_or_fail(&Layer::write, &Layer::halt, status);
+        this->call_or_fail(&Layer::write, &Layer::halt, status);
     }
 
-    virtual void handleDiag(LayerReport &report) { this->template call(&Layer::diag, report); }
+    virtual void handleDiag(LayerReport &report) { this->call(&Layer::diag, report); }
 
     virtual void handleInit(LayerStatus &status) { this->template call<LayerStatus::Warn>(&Layer::init, status); }
-    virtual void handleShutdown(LayerStatus &status) { this->template call(&Layer::shutdown, status); }
+    virtual void handleShutdown(LayerStatus &status) { this->call(&Layer::shutdown, status); }
 
-    virtual void handleHalt(LayerStatus &status) {  this->template call(&Layer::halt, status); }
+    virtual void handleHalt(LayerStatus &status) {  this->call(&Layer::halt, status); }
     virtual void handleRecover(LayerStatus &status) { this->template call<LayerStatus::Warn>(&Layer::recover, status); }
 public:
     LayerGroup(const std::string &n) : Layer(n) {}
@@ -249,7 +249,7 @@ template<typename T> class DiagGroup : public VectorHelper<T>{
     typedef VectorHelper<T> V;
 public:
     virtual void diag(LayerReport &report){
-        this->template call(&Layer::diag, report);
+        this->call(&Layer::diag, report);
     }
 };
 

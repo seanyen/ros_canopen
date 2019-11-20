@@ -514,7 +514,7 @@ bool RosChain::setup_nodes(){
                 if(p.empty()){
                         ROS_WARN_STREAM("Package '" << pkg << "' was not found");
                 }else{
-                    eds = (boost::filesystem::path(p)/eds).make_preferred().native();;
+                    eds = (boost::filesystem::path(p)/eds).make_preferred().string();
                 }
             }
         }

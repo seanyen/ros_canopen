@@ -11,7 +11,7 @@
 namespace can{
 
 
-template<typename Socket> class AsioDriver : public DriverInterface{
+template<typename Socket, typename Lifecycle> class AsioDriver : public DriverInterface{
     using FrameDispatcher = FilteredDispatcher<unsigned int, CommInterface::FrameListener>;
     using StateDispatcher = SimpleDispatcher<StateInterface::StateListener>;
     FrameDispatcher frame_dispatcher_;
@@ -60,7 +60,7 @@ protected:
         }
     }
     void setNotReady(){
-        setDriverState(socket_.is_open()?State::open : State::closed);
+        setDriverState(Lifecycle::ready(socket_)?State::open : State::closed);
     }
 
     void frameReceived(const boost::system::error_code& error){
@@ -109,10 +109,7 @@ public:
     }
 
     virtual void shutdown(){
-        if(socket_.is_open()){
-            socket_.cancel();
-            socket_.close();
-        }
+        Lifecycle::shutdown(socket_);
         io_service_.stop();
     }
 

@@ -34,7 +34,6 @@ catkin_package(
   DEPENDS
     Boost
     console_bridge
-    soem
 )
 
 include_directories(

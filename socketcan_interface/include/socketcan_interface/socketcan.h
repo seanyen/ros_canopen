@@ -20,7 +20,25 @@
 
 namespace can {
 
-class SocketCANInterface : public AsioDriver<boost::asio::posix::stream_descriptor> {
+class SocketLifecycle
+{
+public:
+    static bool ready(boost::asio::posix::stream_descriptor &socket)
+    {
+        return socket.is_open();
+    }
+
+    static void shutdown(boost::asio::posix::stream_descriptor &socket)
+    {
+        if (socket.io_open())
+        {
+            socket.cancel();
+            socket.close();
+        }
+    }
+};
+
+class SocketCANInterface : public AsioDriver<boost::asio::posix::stream_descriptor, SocketLifecycle> {
     bool loopback_;
     int sc_;
 public:

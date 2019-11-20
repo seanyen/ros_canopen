@@ -54,6 +54,7 @@ target_link_libraries(${PROJECT_NAME}_plugin
 )
 
 # canopen_bcm_sync
+if(NOT WIN32)
 add_executable(canopen_bcm_sync
   src/bcm_sync.cpp
 )
@@ -61,10 +62,10 @@ target_link_libraries(canopen_bcm_sync
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES}
 )
+endif()
 
 install(
   TARGETS
-    canopen_bcm_sync
     ${PROJECT_NAME}
    ${PROJECT_NAME}_plugin
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

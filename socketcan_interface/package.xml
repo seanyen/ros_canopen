@@ -19,6 +19,7 @@
   <depend>class_loader</depend>
   <depend>libconsole-bridge-dev</depend>
   <depend>linux-kernel-headers</depend>
+  <depend>soem</depend>
 
   <test_depend>rosunit</test_depend>
 

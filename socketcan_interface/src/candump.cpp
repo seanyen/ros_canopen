@@ -4,7 +4,11 @@
 
 #include <boost/exception/diagnostic_information.hpp>
 #include <class_loader/class_loader.hpp>
+#ifndef _WIN32
 #include <socketcan_interface/socketcan.h>
+#else
+#include <socketcan_interface/soem.h>
+#endif
 
 using namespace can;
 
@@ -68,7 +72,7 @@ int main(int argc, char *argv[]){
             return 1;
         }
     }else{
-        g_driver = std::make_shared<SocketCANInterface>();
+        g_driver = std::make_shared<SoemInterface>();
     }
 
 

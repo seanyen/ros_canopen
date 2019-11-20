@@ -12,6 +12,7 @@
 #define ROSCANOPEN_DEBUG(name, args) ROSCANOPEN_LOG(name, __FILE__, __LINE__,console_bridge::CONSOLE_BRIDGE_LOG_DEBUG, args)
 
 // extra function to mark it as deprecated
-inline __attribute__ ((deprecated("please use ROSCANOPEN_* macros"))) void roscanopen_log_deprecated(const std::string s, const char* f, int l) { console_bridge::getOutputHandler()->log(s, console_bridge::CONSOLE_BRIDGE_LOG_ERROR, f, l); }
+[[deprecated("please use ROSCANOPEN_* macros")]]
+inline void roscanopen_log_deprecated(const std::string s, const char* f, int l) { console_bridge::getOutputHandler()->log(s, console_bridge::CONSOLE_BRIDGE_LOG_ERROR, f, l); }
 #define LOG(args) { std::stringstream sstr; sstr << "LOG: " << args; roscanopen_log_deprecated(sstr.str(), __FILE__, __LINE__); }
 #endif

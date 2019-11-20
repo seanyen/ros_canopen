@@ -13,11 +13,14 @@ find_package(catkin REQUIRED
 
 find_package(console_bridge REQUIRED)
 
+find_package(Soem REQUIRED)
+
 find_package(Boost REQUIRED
   COMPONENTS
     chrono
     system
     thread
+    regex
 )
 
 find_package(Threads REQUIRED)
@@ -31,6 +34,7 @@ catkin_package(
   DEPENDS
     Boost
     console_bridge
+    soem
 )
 
 include_directories(
@@ -45,12 +49,33 @@ add_library(${PROJECT_NAME}_string
     src/string.cpp
 )
 
+target_link_libraries(${PROJECT_NAME}_string
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+
+# ${PROJECT_NAME}_plugin
+add_library(${PROJECT_NAME}_plugin
+  src/${PROJECT_NAME}_plugin.cpp
+  src/soem.cpp
+)
+target_include_directories(${PROJECT_NAME}_plugin
+  PRIVATE $<TARGET_PROPERTY:soem,INTERFACE_INCLUDE_DIRECTORIES>)
+
+target_link_libraries(${PROJECT_NAME}_plugin
+  ${console_bridge_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+  soem
+)
+
 # socketcan_dump
 add_executable(socketcan_dump
   src/candump.cpp
 )
 
 target_link_libraries(socketcan_dump
+   ${PROJECT_NAME}_plugin
    ${PROJECT_NAME}_string
    ${console_bridge_LIBRARIES}
    ${catkin_LIBRARIES}
@@ -59,6 +84,7 @@ target_link_libraries(socketcan_dump
 )
 
 # socketcan_bcm
+if(NOT WIN32)
 add_executable(socketcan_bcm
   src/canbcm.cpp
 )
@@ -69,20 +95,10 @@ target_link_libraries(socketcan_bcm
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
 )
-
-# ${PROJECT_NAME}_plugin
-add_library(${PROJECT_NAME}_plugin
-  src/${PROJECT_NAME}_plugin.cpp
-)
-target_link_libraries(${PROJECT_NAME}_plugin
-  ${console_bridge_LIBRARIES}
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
-)
+endif()
 
 install(
   TARGETS
-    socketcan_bcm
     socketcan_dump
     ${PROJECT_NAME}_plugin
     ${PROJECT_NAME}_string
